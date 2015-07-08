@@ -36,5 +36,5 @@
             }
         };
     };
-    angular.module("ruaghain.lookup-directive", []).directive('', customLookup);
+    angular.module("ruaghain.lookup-directive", []).directive('customLookup', customLookup);
 })();

@@ -6,8 +6,7 @@ describe("Directive: customLookup", function () {
         $q,
         element;
 
-    beforeEach(module("App"));
-
+    beforeEach(module("ruaghain.lookup-directive"));
     beforeEach(module("templates"));
 
     beforeEach(inject(function (_$rootScope_, _$compile_, _$timeout_, _$httpBackend_, _$q_) {
@@ -41,7 +40,7 @@ describe("Directive: customLookup", function () {
             }];
         };
 
-        element = angular.element('<lookup-directive lookup-datasource="findUsers()" lookup-text-field="fullName" lookup-value-field="id"></lookup-directive>');
+        element = angular.element('<custom-lookup lookup-datasource="findUsers()" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
         $compile(element)($rootScope.$new());
     }));
 

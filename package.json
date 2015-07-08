@@ -1,0 +1,33 @@
+{
+  "name": "angular-lookup-directive",
+  "version": "1.0.0",
+  "description": "This is a lookup component which will search a given datasource.",
+  "main": "lookup-directive.js",
+  "private": false,
+  "devDependencies": {
+    "bower": "^1.4.1",
+    "grunt": "^0.4.5",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-cli": "0.0.4",
+    "karma-coverage": "^0.2.7",
+    "karma-firefox-launcher": "^0.1.4",
+    "karma-html-reporter": "^0.2.6",
+    "karma-jasmine": "^0.3.5",
+    "karma-junit-reporter": "^0.2.2",
+    "karma-ng-html2js-preprocessor": "^0.1.2"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/karma start --single-run --browsers Chrome"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ruaghain/angular-lookup-directive"
+  },
+  "author": "Rowan Massey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ruaghain/angular-lookup-directive/issues"
+  },
+  "homepage": "https://github.com/Ruaghain/angular-lookup-directive"
+}
