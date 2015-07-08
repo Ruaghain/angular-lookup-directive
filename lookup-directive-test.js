@@ -22,6 +22,7 @@ describe("Directive: customLookup", function () {
                 "userName": "FirstUser",
                 "firstName": "First",
                 "lastName": "User",
+                "fullName": "First User",
                 "_links": {
                     "self": {
                         "href": "http://localhost/api/users/1"
@@ -32,6 +33,7 @@ describe("Directive: customLookup", function () {
                 "userName": "SecondUser",
                 "firstName": "Second",
                 "lastName": "User",
+                "fullName": "Second User",
                 "_links": {
                     "self": {
                         "href": "http://localhost/api/users/2"
@@ -75,6 +77,13 @@ describe("Directive: customLookup", function () {
         $rootScope.$digest();
         element.find("input").triggerHandler("keyup");
         expect(element.find("li").length).toEqual(2);
+    });
+
+    it("Fills value of selected item in input box.", function () {
+        $rootScope.$digest();
+        element.find("input").triggerHandler("keyup");
+        element.find("a").triggerHandler("click");
+        expect(element.find("input").val()).toBe("First User");
     });
 
 });
