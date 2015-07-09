@@ -7,7 +7,6 @@ describe("Directive: customLookup", function () {
         element;
 
     beforeEach(module("ruaghain.lookup-directive"));
-    beforeEach(module("templates"));
 
     beforeEach(inject(function (_$rootScope_, _$compile_, _$timeout_, _$httpBackend_, _$q_) {
         $compile = _$compile_;
