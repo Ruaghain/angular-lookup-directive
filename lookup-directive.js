@@ -17,9 +17,14 @@
                 lookupTextField: "@",
                 lookupValueField: "@"
             },
-            template: '<div><input type="text" ng-model="searchTerm" ng-keyup="search()">' +
-            '<ul><li ng-repeat="record in foundRecords"><a href="#" data-id="{{record[lookupValueField]}}" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
-            '</li></ul></div>',
+            template: '<div>' +
+            '<input type="text" ng-model="searchTerm" ng-keyup="search()">' +
+            '<ul>' +
+            '<li ng-repeat="record in foundRecords">' +
+            '<a href="#" data-id="{{record[lookupValueField]}}" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
+            '</li>' +
+            '</ul>' +
+            '</div>',
             link: function ($scope, element) {
                 $scope.onItemSelect = function (item) {
                     element.find("input").val(item[$scope.lookupTextField]);
