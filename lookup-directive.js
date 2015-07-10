@@ -17,9 +17,9 @@
             '<a href="#" data-id="{{record[lookupValueField]}}" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
             '</li>' +
             '</ul>' +
-            '</div>';
+                '</div>',
 
-        var link = function (scope, element) {
+            link = function (scope, element) {
             scope.onItemSelect = function (item) {
                 element.find("input").val(item[scope.lookupTextField]);
                 scope.foundRecords = [];
@@ -43,10 +43,8 @@
                 lookupValueField: "@"
             },
             template: template,
-            link: link,
-            controller: function ($scope, $q) {
-            }
+            link: link
         };
     };
-    angular.module("ruaghain.lookup-directive", []).directive('customLookup', customLookup);
+    angular.module("ruaghain.lookup-directive", []).directive('customLookup', ["$q", customLookup]);
 })();
