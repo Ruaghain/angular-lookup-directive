@@ -41,7 +41,7 @@ describe("Directive: customLookup", function () {
             }];
         };
 
-        element = angular.element('<custom-lookup lookup-datasource="findUsers()" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
+        element = angular.element('<custom-lookup lookup-datasource="findUsers" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
         $compile(element)($rootScope.$new());
     }));
 

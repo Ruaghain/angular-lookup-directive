@@ -33,7 +33,7 @@
 
                 $scope.search = function () {
                     var defer = $q.defer();
-                    defer.resolve($scope.lookupDatasource({searchValue: $scope.searchTerm}));
+                    defer.resolve($scope.lookupDatasource()($scope.searchTerm));
                     defer.promise.then(function (searchResults) {
                         $scope.foundRecords = searchResults;
                     });
