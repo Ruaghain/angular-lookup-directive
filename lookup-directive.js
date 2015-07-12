@@ -30,7 +30,8 @@
 
                 //This method executes the passed in function. It should resolve an array of objects
                 scope.search = function () {
-                    scope.foundRecords = scope.lookupDatasource()(input.val())
+                    var returnedRecords = scope.lookupDatasource()(input.val());
+                    scope.foundRecords = returnedRecords;
                 };
             };
 
