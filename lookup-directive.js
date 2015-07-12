@@ -28,9 +28,11 @@
                     scope.foundRecords = [];
                 };
 
-                //This method executes the passed in function.
+                //This method executes the passed in function. It should resolve an array of objects
                 scope.search = function () {
-                    scope.foundRecords = scope.lookupDatasource()(input.val());
+                    scope.lookupDatasource()(input.val()).then(function (searchData) {
+                        scope.foundRecords = searchData;
+                    });
                 };
             };
 
