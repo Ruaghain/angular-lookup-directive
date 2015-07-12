@@ -8,7 +8,7 @@
 (function () {
     "use strict";
 
-    var customLookup = function ($q) {
+    var customLookup = function () {
 
         var template = '<div>' +
                 '<input type="text" ng-keyup="search()">' +
@@ -28,12 +28,9 @@
                     scope.foundRecords = [];
                 };
 
+                //This method executes the passed in function.
                 scope.search = function () {
-                    var defer = $q.defer();
-                    defer.resolve(scope.lookupDatasource()(input.val()));
-                    defer.promise.then(function (searchResults) {
-                        scope.foundRecords = searchResults;
-                    });
+                    scope.foundRecords = scope.lookupDatasource()(input.val());
                 };
             };
 
@@ -50,5 +47,5 @@
             link: link
         };
     };
-    angular.module("ruaghain.lookup-directive", []).directive('customLookup', ["$q", customLookup]);
+    angular.module("ruaghain.lookup-directive", []).directive('customLookup', [customLookup]);
 })();
