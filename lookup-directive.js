@@ -8,7 +8,7 @@
 (function () {
     "use strict";
 
-    var customLookup = function () {
+    var customLookup = function ($q) {
 
         var template = '<div>' +
                 '<input type="text" ng-keyup="search()">' +
@@ -28,10 +28,14 @@
                     scope.foundRecords = [];
                 };
 
-                //This method executes the passed in function. It should resolve an array of objects
+                //Would prefer to be able to get dynamic data from the datasource, may need to rethink that
+                //as the directive processes the keyup before the request has full completed.
                 scope.search = function () {
-                    var returnedRecords = scope.lookupDatasource()(input.val());
-                    scope.foundRecords = returnedRecords;
+                    var defer = $q.defer();
+                    defer.resolve(scope.lookupDatasource()(input.val()));
+                    defer.promise.then(function (searchResults) {
+                        scope.foundRecords = searchResults;
+                    });
                 };
             };
 
@@ -48,5 +52,5 @@
             link: link
         };
     };
-    angular.module("ruaghain.lookup-directive", []).directive('customLookup', [customLookup]);
+    angular.module("ruaghain.lookup-directive", []).directive('customLookup', ["$q", customLookup]);
 })();
