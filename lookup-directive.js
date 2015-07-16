@@ -43,7 +43,6 @@
                 lookupTextField: "@",
                 lookupValueField: "@"
             },
-            replace: true,
             require: "ngModel",
             template: template,
             link: link
