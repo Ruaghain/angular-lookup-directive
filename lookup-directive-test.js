@@ -15,7 +15,7 @@ describe("Directive: customLookup", function () {
         $httpBackend = _$httpBackend_;
         $q = _$q_;
 
-        $scope.findUsers = function () {
+        $scope.findUsers = function (searchValue) {
             return [{
                 "id": 1,
                 "userName": "FirstUser",
@@ -43,7 +43,7 @@ describe("Directive: customLookup", function () {
 
         $scope.user = {userId: null};
 
-        element = angular.element('<custom-lookup ng-model="user.userId" lookup-datasource="findUsers" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
+        element = angular.element('<custom-lookup ng-model="user.userId" lookup-datasource="findUsers(searchValue)" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
         $compile(element)($scope);
         $scope.$digest();
     }));
