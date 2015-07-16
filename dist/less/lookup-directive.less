@@ -1,0 +1,26 @@
+@lookup-background: #e4b9b9;
+@lookup-list-item-hover-background: #5f4834;
+@hyperlink-item-hover: #fff;
+@hyperlink-text-colour: #757575;
+
+custom-lookup {
+  ul {
+    background: @lookup-background;
+    padding: 0 5px;
+    list-style: none;
+    position: relative;
+    display: list-item;
+    li {
+      &:hover {
+        background: @lookup-list-item-hover-background;
+        a {
+          color: @hyperlink-item-hover;
+        }
+      }
+      a {
+        color: @hyperlink-text-colour;
+        text-decoration: none;
+      }
+    }
+  }
+}
