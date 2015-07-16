@@ -15,8 +15,9 @@ describe("Directive: customLookup", function () {
         $httpBackend = _$httpBackend_;
         $q = _$q_;
 
-        $scope.findUsers = function (searchValue) {
-            return [{
+        $scope.findUsers = function () {
+            var deferred = $q.defer();
+            deferred.resolve([{
                 "id": 1,
                 "userName": "FirstUser",
                 "firstName": "First",
@@ -38,12 +39,13 @@ describe("Directive: customLookup", function () {
                         "href": "http://localhost/api/users/2"
                     }
                 }
-            }];
+            }]);
+            return deferred.promise;
         };
 
         $scope.user = {userId: null};
 
-        element = angular.element('<custom-lookup ng-model="user.userId" lookup-datasource="findUsers(searchValue)" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
+        element = angular.element('<custom-lookup ng-model="user.userId" lookup-datasource="findUsers" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
         $compile(element)($scope);
         $scope.$digest();
     }));

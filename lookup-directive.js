@@ -28,10 +28,11 @@
                     scope.foundRecords = [];
                 };
 
-                //Would prefer to be able to get dynamic data from the datasource, may need to rethink that
-                //as the directive processes the keyup before the request has full completed.
+                //Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
                 scope.search = function () {
-                    scope.foundRecords = scope.lookupDatasource({searchValue: input.val()});
+                    scope.lookupDatasource()(input.val()).then(function (data) {
+                        scope.foundRecords = data;
+                    });
                 };
             };
 
