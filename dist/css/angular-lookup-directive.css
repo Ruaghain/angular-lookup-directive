@@ -1,0 +1,24 @@
+custom-lookup input {
+    width: 100%
+}
+
+custom-lookup ul {
+    background: #e4b9b9;
+    padding: 0 5px;
+    list-style: none;
+    position: relative;
+    display: list-item
+}
+
+custom-lookup ul li:hover {
+    background: #5f4834
+}
+
+custom-lookup ul li:hover a {
+    color: #fff
+}
+
+custom-lookup ul li a {
+    color: #757575;
+    text-decoration: none
+}
