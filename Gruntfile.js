@@ -37,7 +37,8 @@ module.exports = function (grunt) {
             options: {
                 // the banner is inserted at the top of the output
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
-                mangle: true
+                mangle: true,
+                sourceMap: true
             },
             dist: {
                 files: {
@@ -61,7 +62,7 @@ module.exports = function (grunt) {
             },
             less: {
                 files: ["dist/less/*.less"],
-                tasks: ["less"],
+                tasks: ["less", "uglify"],
                 options: {
                     nospawn: true
                 }
@@ -69,5 +70,6 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask("prod", ["jshint", "less", "karma", "uglify", "watch"]);
+    grunt.registerTask("dev", ["jshint", "karma", "watch"]);
+    grunt.registerTask("prod", ["jshint", "less", "karma", "uglify"]);
 };
