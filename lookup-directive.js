@@ -10,8 +10,8 @@
 
     var customLookup = function () {
 
-        var template = '<div class="lookup-directive">' +
-                '<input type="text" ng-keyup="search()">' +
+        var template = '<div>' +
+                '<input type="text" class="ruaghain-lookup" ng-keyup="search()">' +
                 '<ul>' +
                 '<li ng-repeat="record in foundRecords">' +
                 '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
