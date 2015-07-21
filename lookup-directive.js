@@ -10,7 +10,7 @@
 
     var customLookup = function () {
 
-        var template = '<div>' +
+        var template = '<div class="lookup-directive">' +
                 '<input type="text" ng-keyup="search()">' +
                 '<ul>' +
                 '<li ng-repeat="record in foundRecords">' +
