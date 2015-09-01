@@ -8,7 +8,9 @@
 (function () {
     "use strict";
 
-    var customLookup = function () {
+    var injectParams = ["$http", "$q"];
+
+    var customLookup = function ($http, $q) {
 
         var template = '<div>' +
                 '<input type="text" class="ruaghain-lookup" ng-keyup="search()">' +
@@ -30,10 +32,29 @@
 
                 //Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
                 scope.search = function () {
-                    scope.lookupDatasource()(input.val()).then(function (data) {
-                        scope.foundRecords = data;
-                    });
+                    if (scope.lookupDatasource.type == "rest") {
+                        scope.findRestData().then(function (data) {
+                            scope.foundRecords = data
+                        })
+                    }
                 };
+
+                scope.findRestData = function () {
+                    var deferred = $q.defer();
+                    var datasource = scope.lookupDatasource();
+                    var enteredValue = encodeURIComponent("%" + input.val() + "%");
+                    $http.get(datasource.baseUrl + datasource.searchUrl + enteredValue).then(function (data) {
+                        if (datasource.payload(data.data)) {
+                            deferred.resolve(datasource.payload(data.data));
+                        } else {
+                            deferred.reject();
+                        }
+                    }, function (error) {
+                        deferred.reject(error);
+                        throw new Error("There was an error looking up information")
+                    });
+                    return deferred.promise;
+                }
             };
 
         return {
@@ -48,5 +69,6 @@
             link: link
         };
     };
-    angular.module("ruaghain.lookup-directive", []).directive("customLookup", [customLookup]);
+    customLookup.$inject = injectParams;
+    angular.module("ruaghain.lookup-directive", []).directive("customLookup", customLookup);
 })();

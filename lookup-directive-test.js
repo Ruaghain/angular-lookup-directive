@@ -15,37 +15,57 @@ describe("Directive: customLookup", function () {
         $httpBackend = _$httpBackend_;
         $q = _$q_;
 
+        $scope.dataSource = {
+            type: "REST",
+            baseUrl : "http://localhost/api/users",
+            searchUrl : "/search/findByName?name=",
+            payload: "_embedded[currencies]"
+        };
+
         $scope.findUsers = function () {
-            var deferred = $q.defer();
-            deferred.resolve([{
-                "id": 1,
-                "userName": "FirstUser",
-                "firstName": "First",
-                "lastName": "User",
-                "fullName": "First User",
+            currencies = {
                 "_links": {
                     "self": {
-                        "href": "http://localhost/api/users/1"
+                        "href": "http://localhost:8080/api/currencies{?page,size,sort}",
+                        "templated": true
+                    },
+                    "search": {
+                        "href": "http://localhost:8080/api/currencies/search"
                     }
+                },
+                "_embedded": {
+                    "currencies": [{
+                        "id": 1,
+                        "name": "Euro",
+                        "iso": "EUR",
+                        "_links": {
+                            "self": {
+                                "href": "http://localhost:8080/api/currencies/1"
+                            }
+                        }
+                    }, {
+                        "id": 2,
+                        "name": "British Pound",
+                        "iso": "GBP",
+                        "_links": {
+                            "self": {
+                                "href": "http://localhost:8080/api/currencies/2"
+                            }
+                        }
+                    }]
+                },
+                "page": {
+                    "size": 20,
+                    "totalElements": 2,
+                    "totalPages": 1,
+                    "number": 0
                 }
-            }, {
-                "id": 2,
-                "userName": "SecondUser",
-                "firstName": "Second",
-                "lastName": "User",
-                "fullName": "Second User",
-                "_links": {
-                    "self": {
-                        "href": "http://localhost/api/users/2"
-                    }
-                }
-            }]);
-            return deferred.promise;
+            };
         };
 
         $scope.user = {userId: null};
 
-        element = angular.element('<custom-lookup ng-model="user.userId" lookup-datasource="findUsers" lookup-text-field="fullName" lookup-value-field="id"></custom-lookup>');
+        element = angular.element('<custom-lookup ng-model="user.userId" lookup-datasource="dataSource" lookup-text-field="name" lookup-value-field="id"></custom-lookup>');
         $compile(element)($scope);
         $scope.$digest();
     }));
