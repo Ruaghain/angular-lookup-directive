@@ -24,22 +24,23 @@
             link = function (scope, element, attributes, ngModelController) {
                 var input = element.find("input");
 
+                ngModelController.$parsers.push(function (modelValue) {
+                    var modelValue = parseInt(modelValue || 0);
+                });
+
                 scope.onItemSelect = function (item) {
                     input.val(item[scope.lookupTextField]);
                     ngModelController.$setViewValue(item[scope.lookupValueField]);
                     scope.foundRecords = [];
                 };
 
-                //This method is responsible for the actual search, and will call the relevant method.
+                //Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
                 scope.search = function () {
-                    if (scope.lookupDatasource().type.toLowerCase() == "rest") {
-                        scope.findRestData().then(function (data) {
-                            scope.foundRecords = data
-                        })
-                    }
+                    scope.findRestData().then(function (data) {
+                        scope.foundRecords = data
+                    })
                 };
 
-                //Finds the required record(s) by performing the request using the information given in the datasource.
                 scope.findRestData = function () {
                     var deferred = $q.defer();
                     var datasource = scope.lookupDatasource();
@@ -63,8 +64,7 @@
             scope: {
                 lookupDatasource: "&",
                 lookupTextField: "@",
-                lookupValueField: "@",
-                ngModel: "="
+                lookupValueField: "@"
             },
             require: "ngModel",
             template: template,
