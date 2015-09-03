@@ -24,13 +24,45 @@
             link = function (scope, element, attributes, ngModelController) {
                 var input = element.find("input");
 
-                ngModelController.$parsers.push(function (modelValue) {
-                    var modelValue = parseInt(modelValue || 0);
+                //modelvalue = {id: "1", value: "Euro"}
+                //Formats the data coming up from the model, into the view
+                ngModelController.$formatters.push(function (modelValue) {
+                    if (modelValue) {
+                        return {
+                            id: modelValue[scope.lookupValueField],
+                            value: modelValue[scope.lookupTextField]
+                        }
+                    } else {
+                        return {};
+                    }
                 });
+
+                //This returns the defined value back to the model.
+                ngModelController.$parsers.push(function (viewValue) {
+                    return viewValue;
+                    //var id = viewValue[scope.lookupValueField];
+                    //var value = viewValue[scope.lookupTextField];
+                    //return {
+                    //    id: id,
+                    //    value: value
+                    //}
+                });
+
+                //Adds the values of the id and value to determine changes between the old and new value
+                //scope.$watch("id + value", function (oldvalue, newvalue) {});
+                scope.$watch("id + value", function () {
+                    input.val(scope.value);
+                    ngModelController.$setViewValue({id: scope.id, value: scope.value});
+                });
+
+                ngModelController.$render = function () {
+                    scope.id = ngModelController.$viewValue.id;
+                    scope.value = ngModelController.$viewValue.value;
+                };
 
                 scope.onItemSelect = function (item) {
                     input.val(item[scope.lookupTextField]);
-                    ngModelController.$setViewValue(item[scope.lookupValueField]);
+                    ngModelController.$setViewValue(item);
                     scope.foundRecords = [];
                 };
 
