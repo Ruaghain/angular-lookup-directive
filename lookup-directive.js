@@ -22,6 +22,8 @@
                 '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
+                var input = element.find("input");
+
                 //Formats the data coming up from the model, into the view
                 ngModelController.$formatters.push(function (modelValue) {
                     if (modelValue) {
