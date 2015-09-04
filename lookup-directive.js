@@ -13,7 +13,7 @@
     var customLookup = function ($http, $q) {
 
         var template = '<div>' +
-                '<input type="text" class="ruaghain-lookup" ng-keyup="search()">' +
+                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="search()">' +
                 '<ul>' +
                 '<li ng-repeat="record in foundRecords">' +
                 '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
@@ -22,9 +22,6 @@
                 '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
-                var input = element.find("input");
-
-                //modelvalue = {id: "1", value: "Euro"}
                 //Formats the data coming up from the model, into the view
                 ngModelController.$formatters.push(function (modelValue) {
                     if (modelValue) {
@@ -39,21 +36,20 @@
 
                 //This returns the defined value back to the model.
                 ngModelController.$parsers.push(function (viewValue) {
-                    return viewValue;
-                    //var id = viewValue[scope.lookupValueField];
-                    //var value = viewValue[scope.lookupTextField];
-                    //return {
-                    //    id: id,
-                    //    value: value
-                    //}
+                    var id = viewValue[scope.lookupValueField];
+                    var value = viewValue[scope.lookupTextField];
+                    return {
+                        id: id,
+                        value: value
+                    }
                 });
 
                 //Adds the values of the id and value to determine changes between the old and new value
                 //scope.$watch("id + value", function (oldvalue, newvalue) {});
-                scope.$watch("id + value", function () {
-                    input.val(scope.value);
-                    ngModelController.$setViewValue({id: scope.id, value: scope.value});
-                });
+                //scope.$watch("id + value", function () {
+                //    debugger;
+                //    ngModelController.$setViewValue({id: scope.id, value: scope.value});
+                //});
 
                 ngModelController.$render = function () {
                     scope.id = ngModelController.$viewValue.id;
