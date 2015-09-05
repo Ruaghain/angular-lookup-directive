@@ -30,7 +30,7 @@
                         return {
                             id: modelValue[scope.lookupValueField],
                             value: modelValue[scope.lookupTextField]
-                        }
+                        };
                     }
                 });
 
@@ -41,7 +41,7 @@
                     return {
                         id: id,
                         value: value
-                    }
+                    };
                 });
 
                 ngModelController.$render = function () {
@@ -59,8 +59,8 @@
                 //Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
                 scope.search = function () {
                     scope.findRestData(input).then(function (data) {
-                        scope.foundRecords = data
-                    })
+                        scope.foundRecords = data;
+                    });
                 };
             };
 
@@ -78,10 +78,10 @@
                     }
                 }, function (error) {
                     deferred.reject(error);
-                    throw new Error("There was an error looking up information")
+                    throw new Error("There was an error looking up information");
                 });
                 return deferred.promise;
-            }
+            };
         }];
 
         return {
