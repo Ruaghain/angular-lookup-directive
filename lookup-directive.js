@@ -31,8 +31,6 @@
                             id: modelValue[scope.lookupValueField],
                             value: modelValue[scope.lookupTextField]
                         }
-                    } else {
-                        return {};
                     }
                 });
 
@@ -46,18 +44,12 @@
                     }
                 });
 
-                //Adds the values of the id and value to determine changes between the old and new value
-                //scope.$watch("id + value", function (oldvalue, newvalue) {});
-                //scope.$watch("id + value", function () {
-                //    debugger;
-                //    ngModelController.$setViewValue({id: scope.id, value: scope.value});
-                //});
-
                 ngModelController.$render = function () {
                     scope.id = ngModelController.$viewValue.id;
                     scope.value = ngModelController.$viewValue.value;
                 };
 
+                //This code gets executed as soon as an item on the dropdown gets clicked.
                 scope.onItemSelect = function (item) {
                     input.val(item[scope.lookupTextField]);
                     ngModelController.$setViewValue(item);
@@ -66,28 +58,31 @@
 
                 //Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
                 scope.search = function () {
-                    scope.findRestData().then(function (data) {
+                    scope.findRestData(input).then(function (data) {
                         scope.foundRecords = data
                     })
                 };
-
-                scope.findRestData = function () {
-                    var deferred = $q.defer();
-                    var datasource = scope.lookupDatasource();
-                    var enteredValue = encodeURIComponent("%" + input.val() + "%");
-                    $http.get(datasource.baseUrl + datasource.searchUrl + enteredValue).then(function (data) {
-                        if (datasource.payload(data.data)) {
-                            deferred.resolve(datasource.payload(data.data));
-                        } else {
-                            deferred.reject();
-                        }
-                    }, function (error) {
-                        deferred.reject(error);
-                        throw new Error("There was an error looking up information")
-                    });
-                    return deferred.promise;
-                }
             };
+
+        var controller = ["$scope", function(scope) {
+            //This method finds the entered in information for the rest datasource.
+            scope.findRestData = function (input) {
+                var deferred = $q.defer();
+                var datasource = this.lookupDatasource();
+                var enteredValue = encodeURIComponent("%" + input.val() + "%");
+                $http.get(datasource.baseUrl + datasource.searchUrl + enteredValue).then(function (data) {
+                    if (datasource.payload(data.data)) {
+                        deferred.resolve(datasource.payload(data.data));
+                    } else {
+                        deferred.reject();
+                    }
+                }, function (error) {
+                    deferred.reject(error);
+                    throw new Error("There was an error looking up information")
+                });
+                return deferred.promise;
+            }
+        }];
 
         return {
             restrict: "E",
@@ -98,7 +93,8 @@
             },
             require: "ngModel",
             template: template,
-            link: link
+            link: link,
+            controller: controller
         };
     };
     customLookup.$inject = injectParams;

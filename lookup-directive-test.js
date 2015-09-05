@@ -19,9 +19,51 @@ describe("Directive: customLookup", function () {
             type: "REST",
             baseUrl: "http://localhost/api/users",
             searchUrl: "/search/findByName?name=",
-            payload: "_embedded[currencies]"
+            payload: function (data) {
+                if (data) {
+                    return data._embedded.currencies;
+                }
+            }
         };
 
+        $scope.currencies = {
+            "_links": {
+                "self": {
+                    "href": "http://localhost:8080/api/currencies{?page,size,sort}",
+                    "templated": true
+                },
+                "search": {
+                    "href": "http://localhost:8080/api/currencies/search"
+                }
+            },
+            "_embedded": {
+                "currencies": [{
+                    "id": 1,
+                    "name": "Euro",
+                    "iso": "EUR",
+                    "_links": {
+                        "self": {
+                            "href": "http://localhost:8080/api/currencies/1"
+                        }
+                    }
+                }, {
+                    "id": 2,
+                    "name": "British Pound",
+                    "iso": "GBP",
+                    "_links": {
+                        "self": {
+                            "href": "http://localhost:8080/api/currencies/2"
+                        }
+                    }
+                }]
+            },
+            "page": {
+                "size": 20,
+                "totalElements": 2,
+                "totalPages": 1,
+                "number": 0
+            }
+        };
         $scope.currency = {id: null};
 
         element = angular.element('<custom-lookup ng-model="currency" lookup-datasource="dataSource" lookup-text-field="name" lookup-value-field="id"></custom-lookup>');
@@ -44,62 +86,41 @@ describe("Directive: customLookup", function () {
     });
 
     it("Performs search on key up", function () {
-        $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond({
-            "currencies": [{
-                "id": 1,
-                "name": "Euro",
-                "iso": "EUR",
-                "_links": {
-                    "self": {
-                        "href": "http://localhost:8080/api/currencies/1"
-                    }
-                }
-            }, {
-                "id": 2,
-                "name": "British Pound",
-                "iso": "GBP",
-                "_links": {
-                    "self": {
-                        "href": "http://localhost:8080/api/currencies/2"
-                    }
-                }
-            }]
-        });
+        $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond($scope.currencies);
         var input = element.find("input");
         input.val("Eu");
         input.triggerHandler("keyup");
-
+        $httpBackend.flush();
         expect(element.find("li").length).toEqual(2);
     });
 
     it("Text value and associated model of selected item are populated accordingly.", function () {
-        $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond({
-            "currencies": [{
-                "id": 1,
-                "name": "Euro",
-                "iso": "EUR",
-                "_links": {
-                    "self": {
-                        "href": "http://localhost:8080/api/currencies/1"
-                    }
-                }
-            }, {
-                "id": 2,
-                "name": "British Pound",
-                "iso": "GBP",
-                "_links": {
-                    "self": {
-                        "href": "http://localhost:8080/api/currencies/2"
-                    }
-                }
-            }]
-        });
+        $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond($scope.currencies);
         var input = element.find("input");
         input.val("Eu");
         input.triggerHandler("keyup");
+        $httpBackend.flush();
         element.find("a").triggerHandler("click");
         expect(element.find("input").val()).toBe("Euro");
         expect($scope.currency.id).toBe(1);
     });
 
+    it('Should respond with an error when performing the lookup.', function () {
+        $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond(500, '');
+        expect(function () {
+            var input = element.find("input");
+            input.val("Eu");
+            input.triggerHandler("keyup");
+            $httpBackend.flush();
+        }).toThrow();
+    });
+
+    it('Should reject request, and have nothing populated in found records.', function () {
+        $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond(200, '');
+        var input = element.find("input");
+        input.val("Eu");
+        input.triggerHandler("keyup");
+        $httpBackend.flush();
+        expect(element.find("li").length).toEqual(0);
+    });
 });
