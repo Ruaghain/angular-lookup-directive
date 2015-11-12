@@ -69,12 +69,14 @@
             scope.findRestData = function (input) {
                 var deferred = $q.defer();
                 var datasource = this.lookupDatasource();
-                var enteredValue = encodeURIComponent("%" + input.val() + "%");
-                $http.get(datasource.baseUrl + datasource.searchUrl + enteredValue).then(function (data) {
+                var actualEnteredValue = input.val();
+                var encodedValue = encodeURIComponent("%" + actualEnteredValue + "%");
+                $http.get(datasource.baseUrl + datasource.searchUrl + encodedValue).then(function (data) {
                     if (datasource.payload(data.data)) {
                         deferred.resolve(datasource.payload(data.data));
                     } else {
-                        deferred.reject();
+                        //Need to resolve to a blank object, so it returns nothing.
+                        deferred.resolve();
                     }
                 }, function (error) {
                     deferred.reject(error);
