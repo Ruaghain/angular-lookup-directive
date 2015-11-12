@@ -12,7 +12,8 @@ custom-lookup ul {
     border: 1px solid #dcdcdc;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    overflow-y: scroll
+    overflow-y: scroll;
+    max-height: 150px
 }
 
 custom-lookup ul li {
