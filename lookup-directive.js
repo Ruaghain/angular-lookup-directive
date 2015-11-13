@@ -13,12 +13,16 @@
     var customLookup = function ($http, $q) {
 
         var template = '<div>' +
-                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="search()">' +
+                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keypress="onKeyPress($event)" ng-blur="onBlur($event)">' +
                 '<ul>' +
                 '<li ng-repeat="record in foundRecords">' +
                 '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
                 '</li>' +
                 '</ul>' +
+                '</div>' +
+                '<div ng-show="addRecord">' +
+                '<button id="btnSave">Save</button>' +
+                '<button id="btnCancel">Cancel</button>' +
                 '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
@@ -53,18 +57,49 @@
                 scope.onItemSelect = function (item) {
                     input.val(item[scope.lookupTextField]);
                     ngModelController.$setViewValue(item);
+                    scope.clearResults();
+                };
+
+                /**
+                 * This method will only search when alphanumeric characters (and the down arrow key) are pressed.
+                 * If the ESC key is pressed then the results are cleared.
+                 *
+                 * @param $event The key press event.
+                 */
+                scope.onKeyPress = function ($event) {
+                    var charCode = $event.which;
+                    if (charCode === 27) {
+                        scope.clearResults();
+                    } else if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40)) {
+                        //Only search when alphanumeric characters have been pressed.
+                        scope.search();
+                    }
+                };
+
+                /**
+                 * This method will clear the results of the search if focus has been lost.
+                 *
+                 * @param $event
+                 */
+                scope.onBlur = function ($event) {
+                    //scope.clearResults();
+                };
+
+                scope.clearResults = function () {
                     scope.foundRecords = [];
+                    scope.addRecord = false;
                 };
 
                 //Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
                 scope.search = function () {
                     scope.findRestData(input).then(function (data) {
+                        scope.addRecord = scope.lookupDatasource().allowInsert && typeof data == 'undefined';
                         scope.foundRecords = data;
                     });
                 };
             };
 
-        var controller = ["$scope", function(scope) {
+        var controller = ["$scope", function (scope) {
             //This method finds the entered in information for the rest datasource.
             scope.findRestData = function (input) {
                 var deferred = $q.defer();
