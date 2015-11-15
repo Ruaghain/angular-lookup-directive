@@ -82,14 +82,14 @@ describe("Directive: customLookup", function () {
     });
 
     it("Contains the relevant keyup attribute", function () {
-        expect(element.find("input").attr("ng-keyup")).toEqual('search()');
+        expect(element.find("input").attr("ng-keypress")).toEqual('onKeyPress($event)');
     });
 
-    it("Performs search on key up", function () {
+    it("Performs search on key press", function () {
         $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond($scope.currencies);
         var input = element.find("input");
         input.val("Eu");
-        input.triggerHandler("keyup");
+        input.triggerHandler("keypress");
         $httpBackend.flush();
         expect(element.find("li").length).toEqual(2);
     });
@@ -119,7 +119,7 @@ describe("Directive: customLookup", function () {
         $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond(200, '');
         var input = element.find("input");
         input.val("Eu");
-        input.triggerHandler("keyup");
+        input.triggerHandler("keypress");
         $httpBackend.flush();
         expect(element.find("li").length).toEqual(0);
     });

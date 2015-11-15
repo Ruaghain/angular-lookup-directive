@@ -12,23 +12,26 @@
 
     var customLookup = function ($http, $q) {
 
-        var template = '<div>' +
-                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keypress="onKeyPress($event)" ng-blur="onBlur($event)">' +
-                '<ul>' +
-                '<li ng-repeat="record in foundRecords">' +
-                '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
-                '</li>' +
-                '</ul>' +
+        var template =
+                '<div>' +
+                    '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keypress="onKeyPress($event)" ng-blur="onBlur($event)">' +
+                    '<ul>' +
+                        '<li ng-repeat="record in foundRecords">' +
+                            '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
+                        '</li>' +
+                    '</ul>' +
                 '</div>' +
                 '<div ng-show="addRecord">' +
-                '<button id="btnSave">Save</button>' +
-                '<button id="btnCancel">Cancel</button>' +
+                    '<button id="btnSave" ng-click="saveLookup()">Save</button>' +
+                    '<button id="btnCancel" ng-click="cancel()">Cancel</button>' +
                 '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
                 var input = element.find("input");
 
-                //Formats the data coming up from the model, into the view
+                /**
+                 * Formats the data coming up from the model, into the view
+                 */
                 ngModelController.$formatters.push(function (modelValue) {
                     if (modelValue) {
                         return {
@@ -38,7 +41,9 @@
                     }
                 });
 
-                //This returns the defined value back to the model.
+                /**
+                 * This returns the defined value back to the model.
+                 */
                 ngModelController.$parsers.push(function (viewValue) {
                     var id = viewValue[scope.lookupValueField];
                     var value = viewValue[scope.lookupTextField];
@@ -48,6 +53,9 @@
                     };
                 });
 
+                /**
+                 *
+                 */
                 ngModelController.$render = function () {
                     scope.id = ngModelController.$viewValue.id;
                     scope.value = ngModelController.$viewValue.value;
@@ -85,22 +93,77 @@
                     //scope.clearResults();
                 };
 
+                /**
+                 * This method clears the results of any searches, along with the displaying of the save and cancel buttons
+                 */
                 scope.clearResults = function () {
                     scope.foundRecords = [];
                     scope.addRecord = false;
                 };
 
-                //Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
+                /**
+                 * Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
+                 */
                 scope.search = function () {
                     scope.findRestData(input).then(function (data) {
                         scope.addRecord = scope.lookupDatasource().allowInsert && typeof data == 'undefined';
                         scope.foundRecords = data;
                     });
                 };
+
+                /**
+                 * This method will save a resource if one doesn't exist for the typed in value.
+                 */
+                scope.saveLookup = function () {
+                    var newValue = input.val();
+                    var SaveUrl = scope.lookupDatasource().baseUrl;
+                    var payload = '{"' + scope.lookupTextField + '":"' + newValue + '"}';
+
+                    var deferred = $q.defer();
+                    $http.post(SaveUrl, payload).then(function (result) {
+                        scope.getResource(result.headers('location')).then(function (data) {
+                            ngModelController.$setViewValue(data);
+                            scope.clearResults()
+                        });
+                    }, function (error) {
+                        deferred.reject(error);
+                        throw new Error("There was an error saving the record: " + error.data.message)
+                    });
+                };
+
+                /**
+                 * This method executes when the cancel button is pressed.
+                 */
+                scope.cancel = function () {
+                    scope.clearResults();
+                };
+
+                /**
+                 * This method will retrieve a given resource for the provided Url
+                 *
+                 * @param url The url for the required resource.
+                 * @returns {*} A promise for the required information.
+                 */
+                scope.getResource = function (url) {
+                    var deferred = $q.defer();
+                    $http.get(url).then(function (data) {
+                        deferred.resolve(data.data)
+                    }, function (error) {
+                        deferred.reject(error);
+                        throw new Error("There was an error looking up information");
+                    });
+                    return deferred.promise;
+                }
             };
 
         var controller = ["$scope", function (scope) {
-            //This method finds the entered in information for the rest datasource.
+
+            /**
+             * This method finds the entered in information for the rest datasource.
+             *
+             * @param input The actual input component.
+             * @returns {*}
+             */
             scope.findRestData = function (input) {
                 var deferred = $q.defer();
                 var datasource = this.lookupDatasource();
