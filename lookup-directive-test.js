@@ -89,7 +89,11 @@ describe("Directive: customLookup", function () {
         $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond($scope.currencies);
         var input = element.find("input");
         input.val("Eu");
-        input.triggerHandler("keypress");
+
+        var aEvent = jQuery.Event("keypress");
+        aEvent.which = 65;
+        $("input").trigger(aEvent);
+
         $httpBackend.flush();
         expect(element.find("li").length).toEqual(2);
     });
