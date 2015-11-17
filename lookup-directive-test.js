@@ -82,7 +82,7 @@ describe("Directive: customLookup", function () {
     });
 
     it("Contains the relevant keyup attribute", function () {
-        expect(element.find("input").attr("ng-keypress")).toEqual('onKeyUp($event)');
+        expect(element.find("input").attr("ng-keyup")).toEqual('onKeyUp($event)');
     });
 
     it("Performs search on key press", function () {

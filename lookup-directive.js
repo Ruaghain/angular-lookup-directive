@@ -14,7 +14,7 @@
 
         var template =
                 '<div>' +
-                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)" ng-blur="onBlur($event)">' +
+                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)" ng-blur="onBlur()">' +
                     '<ul>' +
                         '<li ng-repeat="record in foundRecords">' +
                             '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
@@ -27,6 +27,7 @@
                 '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
+
                 var input = element.find("input");
 
                 /**
@@ -65,6 +66,7 @@
                 scope.onItemSelect = function (item) {
                     input.val(item[scope.lookupTextField]);
                     ngModelController.$setViewValue(item);
+                    scope.searching = false;
                     scope.clearResults();
                 };
 
@@ -86,11 +88,12 @@
 
                 /**
                  * This method will clear the results of the search if focus has been lost.
-                 *
-                 * @param $event
                  */
-                scope.onBlur = function ($event) {
-                    //scope.clearResults();
+                scope.onBlur = function () {
+                    //if (scope.searching) {
+                    //    scope.clearResults();
+                    //    scope.value = '';
+                    //}
                 };
 
                 /**
@@ -99,12 +102,14 @@
                 scope.clearResults = function () {
                     scope.foundRecords = [];
                     scope.addRecord = false;
+                    scope.searching = false;
                 };
 
                 /**
                  * Ensure that a promise is returned from the controller, that will get resolved here, which is perfectly acceptable for the minute.
                  */
                 scope.search = function () {
+                    scope.searching = true;
                     scope.findRestData(input).then(function (data) {
                         scope.addRecord = scope.lookupDatasource().allowInsert && (typeof data == 'undefined' || data.length === 0);
                         scope.foundRecords = data;
@@ -158,7 +163,7 @@
             };
 
         var controller = ["$scope", function (scope) {
-
+            scope.searching = false;
             /**
              * This method finds the entered in information for the rest datasource.
              *
