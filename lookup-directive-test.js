@@ -92,7 +92,7 @@ describe("Directive: customLookup", function () {
 
         var aEvent = jQuery.Event("keypress");
         aEvent.which = 65;
-        $("input").trigger(aEvent);
+        angular.element(input).triggerHandler(aEvent);
 
         $httpBackend.flush();
         expect(element.find("li").length).toEqual(2);
@@ -102,7 +102,11 @@ describe("Directive: customLookup", function () {
         $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond($scope.currencies);
         var input = element.find("input");
         input.val("Eu");
-        input.triggerHandler("keyup");
+
+        var aEvent = jQuery.Event("keypress");
+        aEvent.which = 65;
+        angular.element(input).triggerHandler(aEvent);
+
         $httpBackend.flush();
         element.find("a").triggerHandler("click");
         expect(element.find("input").val()).toBe("Euro");
@@ -114,7 +118,11 @@ describe("Directive: customLookup", function () {
         expect(function () {
             var input = element.find("input");
             input.val("Eu");
-            input.triggerHandler("keyup");
+
+            var aEvent = jQuery.Event("keypress");
+            aEvent.which = 65;
+            angular.element(input).triggerHandler(aEvent);
+
             $httpBackend.flush();
         }).toThrow();
     });
@@ -123,7 +131,11 @@ describe("Directive: customLookup", function () {
         $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond(200, '');
         var input = element.find("input");
         input.val("Eu");
-        input.triggerHandler("keypress");
+
+        var aEvent = jQuery.Event("keypress");
+        aEvent.which = 65;
+        angular.element(input).triggerHandler(aEvent);
+
         $httpBackend.flush();
         expect(element.find("li").length).toEqual(0);
     });
