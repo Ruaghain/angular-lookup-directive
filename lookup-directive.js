@@ -123,11 +123,11 @@
                     $http.post(SaveUrl, payload).then(function (result) {
                         scope.getResource(result.headers('location')).then(function (data) {
                             ngModelController.$setViewValue(data);
-                            scope.clearResults()
+                            scope.clearResults();
                         });
                     }, function (error) {
                         deferred.reject(error);
-                        throw new Error("There was an error saving the record: " + error.data.message)
+                        throw new Error("There was an error saving the record: " + error.data.message);
                     });
                 };
 
@@ -147,13 +147,13 @@
                 scope.getResource = function (url) {
                     var deferred = $q.defer();
                     $http.get(url).then(function (data) {
-                        deferred.resolve(data.data)
+                        deferred.resolve(data.data);
                     }, function (error) {
                         deferred.reject(error);
                         throw new Error("There was an error looking up information");
                     });
                     return deferred.promise;
-                }
+                };
             };
 
         var controller = ["$scope", function (scope) {
