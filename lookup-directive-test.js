@@ -82,7 +82,7 @@ describe("Directive: customLookup", function () {
     });
 
     it("Contains the relevant keyup attribute", function () {
-        expect(element.find("input").attr("ng-keypress")).toEqual('onKeyPress($event)');
+        expect(element.find("input").attr("ng-keypress")).toEqual('onKeyUp($event)');
     });
 
     it("Performs search on key press", function () {
@@ -90,7 +90,7 @@ describe("Directive: customLookup", function () {
         var input = element.find("input");
         input.val("Eu");
 
-        var aEvent = jQuery.Event("keypress");
+        var aEvent = jQuery.Event("keyup");
         aEvent.which = 65;
         angular.element(input).triggerHandler(aEvent);
 
@@ -103,7 +103,7 @@ describe("Directive: customLookup", function () {
         var input = element.find("input");
         input.val("Eu");
 
-        var aEvent = jQuery.Event("keypress");
+        var aEvent = jQuery.Event("keyup");
         aEvent.which = 65;
         angular.element(input).triggerHandler(aEvent);
 
@@ -119,7 +119,7 @@ describe("Directive: customLookup", function () {
             var input = element.find("input");
             input.val("Eu");
 
-            var aEvent = jQuery.Event("keypress");
+            var aEvent = jQuery.Event("keyup");
             aEvent.which = 65;
             angular.element(input).triggerHandler(aEvent);
 
@@ -132,7 +132,7 @@ describe("Directive: customLookup", function () {
         var input = element.find("input");
         input.val("Eu");
 
-        var aEvent = jQuery.Event("keypress");
+        var aEvent = jQuery.Event("keyup");
         aEvent.which = 65;
         angular.element(input).triggerHandler(aEvent);
 

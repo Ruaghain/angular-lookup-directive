@@ -14,7 +14,7 @@
 
         var template =
                 '<div>' +
-                    '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keypress="onKeyPress($event)" ng-blur="onBlur($event)">' +
+                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)" ng-blur="onBlur($event)">' +
                     '<ul>' +
                         '<li ng-repeat="record in foundRecords">' +
                             '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
@@ -74,7 +74,7 @@
                  *
                  * @param $event The key press event.
                  */
-                scope.onKeyPress = function ($event) {
+                scope.onKeyUp = function ($event) {
                     var charCode = $event.which;
                     if (charCode === 27) {
                         scope.clearResults();
@@ -106,7 +106,7 @@
                  */
                 scope.search = function () {
                     scope.findRestData(input).then(function (data) {
-                        scope.addRecord = scope.lookupDatasource().allowInsert && typeof data == 'undefined';
+                        scope.addRecord = scope.lookupDatasource().allowInsert && (typeof data == 'undefined' || data.length === 0);
                         scope.foundRecords = data;
                     });
                 };
@@ -136,6 +136,7 @@
                  */
                 scope.cancel = function () {
                     scope.clearResults();
+                    scope.value = '';
                 };
 
                 /**
