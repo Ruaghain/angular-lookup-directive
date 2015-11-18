@@ -14,7 +14,7 @@
 
         var template =
                 '<div>' +
-                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)" ng-blur="onBlur()">' +
+                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)">' +
                     '<ul>' +
                         '<li ng-repeat="record in foundRecords">' +
                             '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +

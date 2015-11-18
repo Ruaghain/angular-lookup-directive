@@ -8,6 +8,9 @@ custom-lookup {
   input {
     width: 100%;
   }
+}
+
+.ruaghain-lookup {
   ul {
     background: @list-background-colour;
     padding: 0 5px;
@@ -16,18 +19,19 @@ custom-lookup {
     display: list-item;
     box-sizing: border-box;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
+    overflow: auto;
     overflow-y: scroll;
     max-height: 150px;
     li {
       display: block;
-      &:hover{
+      height: 60px;
+      &:active {
         background: @list-item-hover-background-colour;
       }
       a {
         color: @anchor-item-colour;
         text-decoration: none;
-        &:hover {
+        &:active {
           text-decoration: none;
           background: @list-item-hover-background-colour;
         }
