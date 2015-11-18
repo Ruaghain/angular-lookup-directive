@@ -101,15 +101,15 @@
                 };
 
                 scope.onKeyDown = function (e) {
-                    e.preventDefault();
-
-                    if (e.which == 40) {
-                        var next = $('.active').removeClass('active').next('li');
-                        next = next.length > 0 ? next : $('.focus li:eq(0)');
-                        next.addClass('active').children('a').focus();
-                    } else if (e.which == 38) {
-                        scope.clearResults();
-                    }
+                    //e.preventDefault();
+                    //
+                    //if (e.which == 40) {
+                    //    var next = $('.active').removeClass('active').next('li');
+                    //    next = next.length > 0 ? next : $('.focus li:eq(0)');
+                    //    next.addClass('active').children('a').focus();
+                    //} else if (e.which == 38) {
+                    //    scope.clearResults();
+                    //}
                 };
 
                 /**
