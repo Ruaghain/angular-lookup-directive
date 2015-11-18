@@ -2,7 +2,7 @@ custom-lookup input {
     width: 100%
 }
 
-.ruaghain-lookup ul {
+custom-lookup ul {
     background: #fff;
     padding: 0 5px;
     list-style: none;
@@ -10,26 +10,25 @@ custom-lookup input {
     display: list-item;
     box-sizing: border-box;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    overflow: auto;
+    overflow: hidden;
     overflow-y: scroll;
     max-height: 150px
 }
 
-.ruaghain-lookup ul li {
-    display: block;
-    height: 60px
+custom-lookup ul li {
+    display: block
 }
 
-.ruaghain-lookup ul li:active {
+custom-lookup ul li:hover {
     background: #f6f6f6
 }
 
-.ruaghain-lookup ul li a {
+custom-lookup ul li a {
     color: #676767;
     text-decoration: none
 }
 
-.ruaghain-lookup ul li a:active {
+custom-lookup ul li a:hover {
     text-decoration: none;
     background: #f6f6f6
 }
