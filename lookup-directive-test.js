@@ -90,12 +90,24 @@ describe("Directive: customLookup", function () {
         var input = element.find("input");
         input.val("Eu");
 
-        var aEvent = jQuery.Event("keyup");
-        aEvent.which = 65;
-        angular.element(input).triggerHandler(aEvent);
+        executeKeyUpEvent(input, 65);
 
         $httpBackend.flush();
         expect(element.find("li").length).toEqual(2);
+    });
+
+    it("Clears results on ESC key press", function () {
+        $httpBackend.whenGET("http://localhost/api/users/search/findByName?name=%25Eu%25").respond($scope.currencies);
+        var input = element.find("input");
+        input.val("Eu");
+
+        executeKeyUpEvent(input, 65);
+
+        $httpBackend.flush();
+        expect(element.find("li").length).toEqual(2);
+
+        executeKeyUpEvent(input, 27);
+        expect(element.find("li").length).toEqual(0);
     });
 
     it("Text value and associated model of selected item are populated accordingly.", function () {
@@ -103,9 +115,7 @@ describe("Directive: customLookup", function () {
         var input = element.find("input");
         input.val("Eu");
 
-        var aEvent = jQuery.Event("keyup");
-        aEvent.which = 65;
-        angular.element(input).triggerHandler(aEvent);
+        executeKeyUpEvent(input, 65);
 
         $httpBackend.flush();
         element.find("a").triggerHandler("click");
@@ -119,9 +129,7 @@ describe("Directive: customLookup", function () {
             var input = element.find("input");
             input.val("Eu");
 
-            var aEvent = jQuery.Event("keyup");
-            aEvent.which = 65;
-            angular.element(input).triggerHandler(aEvent);
+            executeKeyUpEvent(input, 65);
 
             $httpBackend.flush();
         }).toThrow();
@@ -132,11 +140,15 @@ describe("Directive: customLookup", function () {
         var input = element.find("input");
         input.val("Eu");
 
-        var aEvent = jQuery.Event("keyup");
-        aEvent.which = 65;
-        angular.element(input).triggerHandler(aEvent);
+        executeKeyUpEvent(input, 65);
 
         $httpBackend.flush();
         expect(element.find("li").length).toEqual(0);
     });
+
+    function executeKeyUpEvent(input, key) {
+        var aEvent = jQuery.Event("keyup");
+        aEvent.which = key;
+        angular.element(input).triggerHandler(aEvent);
+    }
 });

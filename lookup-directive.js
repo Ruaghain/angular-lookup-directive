@@ -62,7 +62,11 @@
                     scope.value = ngModelController.$viewValue.value;
                 };
 
-                //This code gets executed as soon as an item on the dropdown gets clicked.
+                /**
+                 * This code gets executed as soon as an item on the dropdown gets clicked.
+                 *
+                 * @param item The li item that was selected.
+                 */
                 scope.onItemSelect = function (item) {
                     input.val(item[scope.lookupTextField]);
                     ngModelController.$setViewValue(item);
