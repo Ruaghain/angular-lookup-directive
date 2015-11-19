@@ -14,8 +14,8 @@
 
         var template =
                 '<div>' +
-                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)" ng-keydown="onKeyDown($event)">' +
-                    '<ul>' +
+                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)">' +
+                '<ul ng-keydown="onKeyDown($event)">' +
                         '<li ng-repeat="record in foundRecords">' +
                             '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
                         '</li>' +
@@ -101,15 +101,27 @@
                 };
 
                 scope.onKeyDown = function (e) {
-                    //e.preventDefault();
-                    //
-                    //if (e.which == 40) {
-                    //    var next = $('.active').removeClass('active').next('li');
-                    //    next = next.length > 0 ? next : $('.focus li:eq(0)');
-                    //    next.addClass('active').children('a').focus();
-                    //} else if (e.which == 38) {
-                    //    scope.clearResults();
-                    //}
+                    e.preventDefault();
+
+                    if (e.which === 27) {
+                        scope.clearResults();
+                    }
+
+                    if (e.which == 40) {
+                        var next = e.target.parentElement.nextElementSibling;
+                        if (next) {
+                            next.firstChild.focus();
+                        } else {
+                            e.target.parentElement.parentElement.firstElementChild.focus();
+                        }
+                    } else if (e.which == 38) {
+                        var previous = e.target.parentElement.previousElementSibling;
+                        if (previous) {
+                            previous.firstChild.focus();
+                        } else {
+                            e.target.parentElement.parentElement.lastElementChild.focus();
+                        }
+                    }
                 };
 
                 /**
