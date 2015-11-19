@@ -16,12 +16,14 @@ custom-lookup {
     display: list-item;
     box-sizing: border-box;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    overflow-y: scroll;
+    overflow: auto;
     max-height: 150px;
     li {
       display: block;
       &:hover {
+        background: @list-item-hover-background-colour;
+      }
+      &:active {
         background: @list-item-hover-background-colour;
       }
       a {
