@@ -17,7 +17,7 @@
                 '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)">' +
                 '<ul ng-keydown="onKeyDown($event)">' +
                         '<li ng-repeat="record in foundRecords">' +
-                            '<a href="#" ng-click="onItemSelect(record)">{{record[lookupTextField]}}</a>' +
+                            '<a href="#" ng-click="onItemSelect(record)" ng-keyup="onItemKeyUp($event, record)">{{record[lookupTextField]}}</a>' +
                         '</li>' +
                     '</ul>' +
                 '</div>' +
@@ -87,6 +87,19 @@
                     } else if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40)) {
                         //Only search when alphanumeric characters have been pressed.
                         scope.search();
+                    }
+                };
+
+                /**
+                 * This method deals with selecting the relevant item that is active in the list
+                 *
+                 * @param $event The event to be checked for.
+                 * @param item The item that was selected.
+                 */
+                scope.onItemKeyUp = function($event, item) {
+                    var charCode = $event.which;
+                    if (charCode === 13) {
+                        scope.onItemSelect(item)
                     }
                 };
 
