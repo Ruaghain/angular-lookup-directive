@@ -13,7 +13,7 @@
     var customLookup = function ($http, $q) {
 
         var template =
-                '<div>' +
+                '<div ng-cloak>' +
                 '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onInputKeyUp($event)">' +
                 '<ul ng-keydown="onListKeyDown($event)">' +
                         '<li ng-repeat="record in foundRecords">' +
@@ -55,6 +55,16 @@
                     };
                 });
 
+                //ngModelController.$validators.idExists = function(modelValue, viewValue) {
+                //    var value = modelValue || viewValue;
+                //    return !ngModelController.$isEmpty(value[scope.lookupValueField])
+                //};
+
+                //scope.$watch("value", function(newValue, oldValue) {
+                //    var newval = newValue;
+                //    var oldval = oldValue;
+                //});
+
                 /**
                  *
                  */
@@ -85,8 +95,7 @@
                     var charCode = $event.which;
                     if (charCode === 27 || (charCode != 40 && ngModelController.$isEmpty(input.val()))) {
                         scope.clearResults();
-                        ngModelController.$rollbackViewValue()
-                    } else if (!scope.searching && ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40))) {
+                    } else if (((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40))) {
                         if (scope.searching && charCode === 40) {
                             //Don't reissue the search request if the down arrow is pressed multiple times.
                             return;
