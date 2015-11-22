@@ -14,10 +14,10 @@
 
         var template =
                 '<div>' +
-                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onKeyUp($event)">' +
-                '<ul ng-keydown="onKeyDown($event)">' +
+                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onInputKeyUp($event)">' +
+                '<ul ng-keydown="onListKeyDown($event)">' +
                         '<li ng-repeat="record in foundRecords">' +
-                            '<a href="#" ng-click="onItemSelect(record)" ng-keyup="onItemKeyUp($event, record)">{{record[lookupTextField]}}</a>' +
+                '<a href="" ng-click="onItemSelect(record)" ng-keyup="onItemKeyUp($event, record)">{{record[lookupTextField]}}</a>' +
                         '</li>' +
                     '</ul>' +
                 '</div>' +
@@ -27,6 +27,7 @@
                 '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
+                if (!ngModelController) return;
 
                 var input = element.find("input");
 
@@ -80,11 +81,16 @@
                  *
                  * @param $event The key press event.
                  */
-                scope.onKeyUp = function ($event) {
+                scope.onInputKeyUp = function ($event) {
                     var charCode = $event.which;
-                    if (charCode === 27) {
+                    if (charCode === 27 || (charCode != 40 && ngModelController.$isEmpty(input.val()))) {
                         scope.clearResults();
-                    } else if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40)) {
+                        ngModelController.$rollbackViewValue()
+                    } else if (!scope.searching && ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40))) {
+                        if (scope.searching && charCode === 40) {
+                            //Don't reissue the search request if the down arrow is pressed multiple times.
+                            return;
+                        }
                         //Only search when alphanumeric characters have been pressed.
                         scope.search();
                     }
@@ -96,10 +102,10 @@
                  * @param $event The event to be checked for.
                  * @param item The item that was selected.
                  */
-                scope.onItemKeyUp = function($event, item) {
+                scope.onItemKeyUp = function ($event, item) {
                     var charCode = $event.which;
                     if (charCode === 13) {
-                        scope.onItemSelect(item)
+                        scope.onItemSelect(item);
                     }
                 };
 
@@ -113,7 +119,7 @@
                     //}
                 };
 
-                scope.onKeyDown = function (e) {
+                scope.onListKeyDown = function (e) {
                     e.preventDefault();
 
                     if (e.which === 27) {
@@ -152,7 +158,7 @@
                 scope.search = function () {
                     scope.searching = true;
                     scope.findRestData(input).then(function (data) {
-                        scope.addRecord = scope.lookupDatasource().allowInsert && (typeof data == 'undefined' || data.length === 0);
+                        scope.addRecord = scope.lookupAllowInsert && (typeof data == 'undefined' || data.length === 0);
                         scope.foundRecords = data;
                     });
                 };
@@ -182,7 +188,7 @@
                  */
                 scope.cancel = function () {
                     scope.clearResults();
-                    scope.value = '';
+                    ngModelController.$rollbackViewValue()
                 };
 
                 /**
@@ -205,6 +211,8 @@
 
         var controller = ["$scope", function (scope) {
             scope.searching = false;
+            scope.lookupAllowInsert = angular.isDefined(scope.lookupAllowInsert) ? scope.lookupAllowInsert : false;
+
             /**
              * This method finds the entered in information for the rest datasource.
              *
@@ -236,7 +244,8 @@
             scope: {
                 lookupDatasource: "&",
                 lookupTextField: "@",
-                lookupValueField: "@"
+                lookupValueField: "@",
+                lookupAllowInsert: "=?"
             },
             require: "ngModel",
             template: template,

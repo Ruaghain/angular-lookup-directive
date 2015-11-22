@@ -66,7 +66,7 @@ describe("Directive: customLookup", function () {
         };
         $scope.currency = {id: null};
 
-        element = angular.element('<custom-lookup ng-model="currency" lookup-datasource="dataSource" lookup-text-field="name" lookup-value-field="id"></custom-lookup>');
+        element = angular.element('<custom-lookup ng-model="currency" lookup-datasource="dataSource" lookup-text-field="name" lookup-value-field="id" lookup-allow-insert="true"></custom-lookup>');
         $compile(element)($scope);
         $scope.$digest();
     }));
@@ -75,6 +75,8 @@ describe("Directive: customLookup", function () {
         expect(element.isolateScope().lookupDatasource).toBeDefined();
         expect(element.isolateScope().lookupTextField).toBe("name");
         expect(element.isolateScope().lookupValueField).toBe("id");
+        expect(element.isolateScope().lookupAllowInsert).toBe("true");
+
     });
 
     it("Replaces the element with the appropriate text for lookups", function () {
@@ -82,7 +84,7 @@ describe("Directive: customLookup", function () {
     });
 
     it("Contains the relevant keyup attribute", function () {
-        expect(element.find("input").attr("ng-keyup")).toEqual('onKeyUp($event)');
+        expect(element.find("input").attr("ng-keyup")).toEqual('onInputKeyUp($event)');
     });
 
     it("Performs search on key press", function () {
