@@ -168,7 +168,11 @@
                     scope.searching = true;
                     scope.findRestData(input).then(function (data) {
                         scope.addRecord = scope.lookupAllowInsert && (typeof data == 'undefined' || data.length === 0);
-                        scope.foundRecords = data;
+                        if (data.length == 1) {
+                            scope.onItemSelect(data[0])
+                        } else {
+                            scope.foundRecords = data;
+                        }
                     });
                 };
 
