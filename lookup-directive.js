@@ -32,7 +32,7 @@
                 if (!ngModelController) return;
 
                 var input = element.find("input");
-                var required = attributes.$attr["required"] != undefined;
+                var required = attributes.$attr.required !== undefined;
 
                 /**
                  * Formats the data coming up from the model, into the view
@@ -61,7 +61,7 @@
                         return {
                             id: '',
                             value: ''
-                        }
+                        };
                     }
                 });
 
@@ -176,7 +176,7 @@
                     scope.findRestData(input).then(function (data) {
                         scope.addRecord = scope.lookupAllowInsert && (typeof data == 'undefined' || data.length === 0);
                         if (data && data.length == 1) {
-                            scope.onItemSelect(data[0])
+                            scope.onItemSelect(data[0]);
                         } else {
                             scope.foundRecords = data;
                         }
@@ -208,7 +208,7 @@
                  */
                 scope.cancel = function () {
                     scope.clearResults();
-                    ngModelController.$rollbackViewValue()
+                    //ngModelController.$rollbackViewValue()
                 };
 
                 /**
