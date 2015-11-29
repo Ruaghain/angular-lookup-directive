@@ -30,6 +30,7 @@
                 if (!ngModelController) return;
 
                 var input = element.find("input");
+                var required = attributes.$attr["required"] != undefined;
 
                 /**
                  * Formats the data coming up from the model, into the view
@@ -47,27 +48,33 @@
                  * This returns the defined value back to the model.
                  */
                 ngModelController.$parsers.push(function (viewValue) {
-                    var id = viewValue[scope.lookupValueField];
-                    var value = viewValue[scope.lookupTextField];
-                    return {
-                        id: id,
-                        value: value
-                    };
+                    if (viewValue) {
+                        var id = viewValue[scope.lookupValueField];
+                        var value = viewValue[scope.lookupTextField];
+                        return {
+                            id: id,
+                            value: value
+                        };
+                    } else {
+                        return {
+                            id: '',
+                            value: ''
+                        }
+                    }
                 });
 
-                //ngModelController.$validators.idExists = function(modelValue, viewValue) {
-                //    var value = modelValue || viewValue;
-                //    return !ngModelController.$isEmpty(value[scope.lookupValueField])
-                //};
-
-                //scope.$watch("value", function(newValue, oldValue) {
-                //    var newval = newValue;
-                //    var oldval = oldValue;
-                //});
-
                 /**
+                 * This ensures that a value is selected if the required attribute is set.
                  *
+                 * @param modelValue
+                 * @param viewValue
+                 * @returns {boolean}
                  */
+                ngModelController.$validators.requiredItemSelected = function (modelValue, viewValue) {
+                    var value = modelValue || viewValue;
+                    return required ? !ngModelController.$isEmpty(value[scope.lookupValueField]) : true;
+                };
+
                 ngModelController.$render = function () {
                     scope.id = ngModelController.$viewValue.id;
                     scope.value = ngModelController.$viewValue.value;
@@ -95,6 +102,8 @@
                     var charCode = $event.which;
                     if (charCode === 27 || (charCode != 40 && ngModelController.$isEmpty(input.val()))) {
                         scope.clearResults();
+                        //Need to clear the view value completely, otherwise the old value returns
+                        ngModelController.$setViewValue(null);
                     } else if (((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40))) {
                         if (scope.searching && charCode === 40) {
                             //Don't reissue the search request if the down arrow is pressed multiple times.
@@ -116,16 +125,6 @@
                     if (charCode === 13) {
                         scope.onItemSelect(item);
                     }
-                };
-
-                /**
-                 * This method will clear the results of the search if focus has been lost.
-                 */
-                scope.onBlur = function () {
-                    //if (scope.searching) {
-                    //    scope.clearResults();
-                    //    scope.value = '';
-                    //}
                 };
 
                 scope.onListKeyDown = function (e) {
