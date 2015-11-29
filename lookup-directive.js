@@ -6,6 +6,8 @@
  */
 
 (function () {
+    //TODO: Could the list item functionality be moved to another directive?
+
     "use strict";
 
     var injectParams = ["$http", "$q"];
@@ -88,7 +90,7 @@
                 scope.onItemSelect = function (item) {
                     input.val(item[scope.lookupTextField]);
                     ngModelController.$setViewValue(item);
-                    scope.searching = false;
+                    scope.itemSelected = true;
                     scope.clearResults();
                 };
 
@@ -102,6 +104,7 @@
                     var charCode = $event.which;
                     if (charCode === 27 || (charCode != 40 && ngModelController.$isEmpty(input.val()))) {
                         scope.clearResults();
+                        scope.itemSelected = false;
                         //Need to clear the view value completely, otherwise the old value returns
                         ngModelController.$setViewValue(null);
                     } else if (((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40))) {
@@ -127,6 +130,11 @@
                     }
                 };
 
+                /**
+                 * This method handles a key press on one of the selected list items.
+                 *
+                 * @param e
+                 */
                 scope.onListKeyDown = function (e) {
                     e.preventDefault();
 
@@ -167,7 +175,7 @@
                     scope.searching = true;
                     scope.findRestData(input).then(function (data) {
                         scope.addRecord = scope.lookupAllowInsert && (typeof data == 'undefined' || data.length === 0);
-                        if (data.length == 1) {
+                        if (data && data.length == 1) {
                             scope.onItemSelect(data[0])
                         } else {
                             scope.foundRecords = data;
@@ -223,6 +231,8 @@
 
         var controller = ["$scope", function (scope) {
             scope.searching = false;
+            scope.itemSelected = false;
+
             scope.lookupAllowInsert = angular.isDefined(scope.lookupAllowInsert) ? scope.lookupAllowInsert : false;
 
             /**
@@ -257,6 +267,7 @@
                 lookupDatasource: "&",
                 lookupTextField: "@",
                 lookupValueField: "@",
+                //This is an optional attribute
                 lookupAllowInsert: "=?"
             },
             require: "ngModel",
