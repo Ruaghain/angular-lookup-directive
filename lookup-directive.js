@@ -10,28 +10,54 @@
 
     "use strict";
 
-    var injectParams = ["$http", "$q"];
+    var injectParams = ["$http", "$q", "$compile"];
 
-    var customLookup = function ($http, $q) {
+    var customLookup = function ($http, $q, $compile) {
 
         var template =
-                '<div ng-cloak>' +
-                '<input type="text" ng-model="value" class="ruaghain-lookup" ng-keyup="onInputKeyUp($event)">' +
+                '<div class="lookup-results">' +
                 '<ul ng-keydown="onListKeyDown($event)">' +
                         '<li ng-repeat="record in foundRecords">' +
                 '<a href="" ng-click="onItemSelect(record)" ng-keyup="onItemKeyUp($event, record)">{{record[lookupTextField]}}</a>' +
                         '</li>' +
                     '</ul>' +
-                '</div>' +
                 '<div ng-show="addRecord">' +
-                    '<button id="btnSave" ng-click="saveLookup()">Save</button>' +
-                    '<button id="btnCancel" ng-click="cancel()">Cancel</button>' +
+                '<button id="btnSave" ng-click="saveLookup()">Save</button>' +
+                '<button id="btnCancel" ng-click="cancel()">Cancel</button>' +
+                '</div>' +
                 '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
                 if (!ngModelController) return;
 
-                var input = element.find("input");
+                var lookups = $compile(template)(scope);
+                element.after(lookups);
+
+                /**
+                 * This method will only search when alphanumeric characters (and the down arrow key) are pressed.
+                 * If the ESC key is pressed then the results are cleared.
+                 *
+                 * @param $event The key press event.
+                 */
+                var onInputKeyUp = function ($event) {
+                    var charCode = $event.which;
+                    if (charCode === 27 || (charCode != 40 && ngModelController.$isEmpty(element.val()))) {
+                        scope.clearResults();
+                        scope.itemSelected = false;
+                        //Need to clear the view value completely, otherwise the old value returns
+                        ngModelController.$setViewValue(null);
+                    } else if (((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40))) {
+                        if (scope.searching && charCode === 40) {
+                            //Don't reissue the search request if the down arrow is pressed multiple times.
+                            return;
+                        }
+                        //Only search when alphanumeric characters have been pressed.
+                        scope.search();
+                    }
+                };
+
+                element.on("keyup", onInputKeyUp);
+
                 var required = attributes.$attr.required !== undefined;
 
                 /**
@@ -88,33 +114,10 @@
                  * @param item The li item that was selected.
                  */
                 scope.onItemSelect = function (item) {
-                    input.val(item[scope.lookupTextField]);
+                    element.val(item[scope.lookupTextField]);
                     ngModelController.$setViewValue(item);
                     scope.itemSelected = true;
                     scope.clearResults();
-                };
-
-                /**
-                 * This method will only search when alphanumeric characters (and the down arrow key) are pressed.
-                 * If the ESC key is pressed then the results are cleared.
-                 *
-                 * @param $event The key press event.
-                 */
-                scope.onInputKeyUp = function ($event) {
-                    var charCode = $event.which;
-                    if (charCode === 27 || (charCode != 40 && ngModelController.$isEmpty(input.val()))) {
-                        scope.clearResults();
-                        scope.itemSelected = false;
-                        //Need to clear the view value completely, otherwise the old value returns
-                        ngModelController.$setViewValue(null);
-                    } else if (((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || (charCode === 40))) {
-                        if (scope.searching && charCode === 40) {
-                            //Don't reissue the search request if the down arrow is pressed multiple times.
-                            return;
-                        }
-                        //Only search when alphanumeric characters have been pressed.
-                        scope.search();
-                    }
                 };
 
                 /**
@@ -173,7 +176,7 @@
                  */
                 scope.search = function () {
                     scope.searching = true;
-                    scope.findRestData(input).then(function (data) {
+                    scope.findRestData(element).then(function (data) {
                         scope.addRecord = scope.lookupAllowInsert && (typeof data == 'undefined' || data.length === 0);
                         if (data && data.length == 1) {
                             scope.onItemSelect(data[0]);
@@ -187,7 +190,7 @@
                  * This method will save a resource if one doesn't exist for the typed in value.
                  */
                 scope.saveLookup = function () {
-                    var newValue = input.val();
+                    var newValue = element.val();
                     var SaveUrl = scope.lookupDatasource().baseUrl;
                     var payload = '{"' + scope.lookupTextField + '":"' + newValue + '"}';
 
@@ -208,7 +211,6 @@
                  */
                 scope.cancel = function () {
                     scope.clearResults();
-                    //ngModelController.$rollbackViewValue()
                 };
 
                 /**
@@ -262,7 +264,7 @@
         }];
 
         return {
-            restrict: "E",
+            restrict: "A",
             scope: {
                 lookupDatasource: "&",
                 lookupTextField: "@",
@@ -271,7 +273,6 @@
                 lookupAllowInsert: "=?"
             },
             require: "ngModel",
-            template: template,
             link: link,
             controller: controller
         };

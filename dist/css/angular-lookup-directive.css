@@ -1,8 +1,12 @@
-custom-lookup input {
+input[custom-lookup] {
     width: 100%
 }
 
-custom-lookup ul {
+input[custom-lookup] .ng-invalid-required-item-selected {
+    border: 1px solid red
+}
+
+.lookup-results ul {
     background: #fff;
     padding: 0 5px;
     list-style: none;
@@ -14,28 +18,24 @@ custom-lookup ul {
     max-height: 150px
 }
 
-custom-lookup ul li {
+.lookup-results ul li {
     display: block
 }
 
-custom-lookup ul li:hover {
+.lookup-results ul li:hover {
     background: #f6f6f6
 }
 
-custom-lookup ul li:active {
+.lookup-results ul li:active {
     background: #f6f6f6
 }
 
-custom-lookup ul li a {
+.lookup-results ul li a {
     color: #676767;
     text-decoration: none
 }
 
-custom-lookup ul li a:hover {
+.lookup-results ul li a:hover {
     text-decoration: none;
     background: #f6f6f6
-}
-
-custom-lookup .ng-invalid {
-    border: 1px solid red
 }
