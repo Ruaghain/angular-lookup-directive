@@ -15,17 +15,17 @@
     var customLookup = function ($http, $q, $compile) {
 
         var template =
-                '<div class="lookup-results">' +
+            '<div class="lookup-results">' +
                 '<ul ng-keydown="onListKeyDown($event)">' +
-                        '<li ng-repeat="record in foundRecords">' +
-                '<a href="" ng-click="onItemSelect(record)" ng-keyup="onItemKeyUp($event, record)">{{record[lookupTextField]}}</a>' +
-                        '</li>' +
-                    '</ul>' +
+                    '<li ng-repeat="record in foundRecords">' +
+                        '<a href="" ng-click="onItemSelect(record)" ng-keyup="onItemKeyUp($event, record)">{{record[lookupTextField]}}</a>' +
+                    '</li>' +
+                '</ul>' +
                 '<div ng-show="addRecord">' +
-                '<button id="btnSave" ng-click="saveLookup()">Save</button>' +
-                '<button id="btnCancel" ng-click="cancel()">Cancel</button>' +
+                    '<button id="btnSave" ng-click="saveLookup()">Save</button>' +
+                    '<button id="btnCancel" ng-click="cancel()">Cancel</button>' +
                 '</div>' +
-                '</div>',
+            '</div>',
 
             link = function (scope, element, attributes, ngModelController) {
                 if (!ngModelController) return;
@@ -103,9 +103,13 @@
                     return required ? !ngModelController.$isEmpty(value[scope.lookupValueField]) : true;
                 };
 
+                /**
+                 * This method gets invoked when the directive gets rendered, it sets the actual value of the directive.
+                 */
                 ngModelController.$render = function () {
-                    scope.id = ngModelController.$viewValue.id;
-                    scope.value = ngModelController.$viewValue.value;
+                    scope.id = ngModelController.$modelValue[scope.lookupValueField];
+                    scope.value = ngModelController.$modelValue[scope.lookupTextField];
+                    element.val(scope.value);
                 };
 
                 /**
