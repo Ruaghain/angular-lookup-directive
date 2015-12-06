@@ -22,8 +22,8 @@
                     '</li>' +
                 '</ul>' +
                 '<div ng-show="addRecord">' +
-                    '<button id="btnSave" ng-click="saveLookup()">Save</button>' +
-                    '<button id="btnCancel" ng-click="cancel()">Cancel</button>' +
+                    '<button id="btnLookupSave" ng-click="saveLookup()">Save</button>' +
+                    '<button id="btnLookupCancel" ng-click="cancel()">Cancel</button>' +
                 '</div>' +
             '</div>',
 
