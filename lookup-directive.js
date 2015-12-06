@@ -56,7 +56,19 @@
                     }
                 };
 
+                /**
+                 * This method stops the kepress if an item has already been selected.
+                 *
+                 * @returns {boolean}
+                 */
+                var onInputKeyPress = function() {
+                    if (scope.itemSelected) {
+                        return false;
+                    }
+                };
+
                 element.on("keyup", onInputKeyUp);
+                element.on("keypress", onInputKeyPress);
 
                 var required = attributes.$attr.required !== undefined;
 
