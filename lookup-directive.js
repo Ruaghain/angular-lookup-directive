@@ -262,8 +262,10 @@
             scope.findRestData = function (input) {
                 var deferred = $q.defer();
                 var datasource = this.lookupDatasource();
-                var actualEnteredValue = input.val();
-                var encodedValue = encodeURIComponent("%" + actualEnteredValue + "%");
+                var encodedValue = input.val();
+                if (datasource.encodeSearchTerm) {
+                    encodedValue = datasource.encodeSearchTerm(encodedValue);
+                }
                 $http.get(datasource.baseUrl + datasource.searchUrl + encodedValue).then(function (data) {
                     if (datasource.payload(data.data)) {
                         deferred.resolve(datasource.payload(data.data));
